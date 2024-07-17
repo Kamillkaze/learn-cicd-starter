@@ -30,6 +30,9 @@ jobs:
       - name: Build
         run: ./scripts/buildprod.sh
 
+      - name: Run db migration
+        run: ./scripts/migrateup.sh
+
       - id: auth
         uses: google-github-actions/auth@v2
         with:
@@ -40,9 +43,6 @@ jobs:
 
       - name: Push image to Google Artifact Registry
         run: gcloud builds submit --tag us-central1-docker.pkg.dev/notely-429005/notely-ar-repo/notely:latest .
-
-      - name: Run db migration
-        run: ./scripts/migrateup.sh
 
       - name: Deploy to Cloud Run
         run: gcloud run deploy notely --image us-central1-docker.pkg.dev/notely-429005/notely-ar-repo/notely:latest --region us-central1 --allow-unauthenticated --project notely-429005 --max-instances=4
